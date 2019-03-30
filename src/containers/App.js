@@ -17,36 +17,18 @@ const mapStateToProps = state => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-   return {
-     onSearchChange: (event) => dispatch(setSearchField(event.target.value)),
-     onRequestRobots: () => dispatch(requestRobots())
-   } 
-}
-
 class App extends Component {
-    // constructor() {
-    //     super();
-    //     this.state = {
-    //         robots: [],
-    //         // searchfield: ''
-    //     }
-    // }
 
     componentDidMount() {
-        // fetch('https://jsonplaceholder.typicode.com/users')
-        // .then(response => response.json())
-        // .then(users => this.setState({robots: users}));
-        this.props.onRequestRobots();
+        this.props.requestRobots();
     }
 
-    // onSearchChange = (event) => {
-    //     this.setState({searchfield: event.target.value});
-    // }
-
+    setSearchField(event) {
+        this.props.setSearchField(event.target.value);
+    }
+     
     render() {
-        //const {robots} = this.state;
-        const { searchField, onSearchChange, robots, isPending } = this.props;
+        const { searchField, robots, isPending } = this.props;
 
         const filteredRobots = robots.filter(robot => {
             return robot.name.toLowerCase().includes(searchField.toLowerCase());
@@ -58,7 +40,7 @@ class App extends Component {
         (
                 <div className='tc'>
                     <h1 className='f1'>RoboFriends</h1>
-                    <SearchBox searchChange={onSearchChange}/>
+                    <SearchBox searchChange={ this.setSearchField.bind(this) }/>
                     <Scroll>
                         <ErrorBoundry>
                             <CardList robots={filteredRobots} />
@@ -69,5 +51,4 @@ class App extends Component {
     }
 }
 
-//connect: higher order function
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, { setSearchField, requestRobots })(App);
